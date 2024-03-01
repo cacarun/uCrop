@@ -10,6 +10,8 @@
         <attr name="ucrop_show_oval_crop_frame" format="boolean"/>
         <attr name="ucrop_circle_dimmed_layer" format="boolean"/>
         <attr name="ucrop_dimmed_color" format="color"/>
+        <attr name="ucrop_dimmed_stroke_color" format="color"/>
+        <attr name="ucrop_dimmed_stroke_size" format="dimension"/>
 
         <attr name="ucrop_grid_stroke_size" format="dimension"/>
         <attr name="ucrop_grid_color" format="color"/>
@@ -20,6 +22,8 @@
         <attr name="ucrop_frame_stroke_size" format="dimension"/>
         <attr name="ucrop_frame_color" format="color"/>
         <attr name="ucrop_show_frame" format="boolean"/>
+
+        <attr name="ucrop_horizontal_padding" format="dimension"/>
 
     </declare-styleable>
 

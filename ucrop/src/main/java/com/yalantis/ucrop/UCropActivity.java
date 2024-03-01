@@ -242,6 +242,8 @@ public class UCropActivity extends AppCompatActivity {
         mOverlayView.setFreestyleCropEnabled(intent.getBooleanExtra(UCrop.Options.EXTRA_FREE_STYLE_CROP, OverlayView.DEFAULT_FREESTYLE_CROP_MODE != OverlayView.FREESTYLE_CROP_MODE_DISABLE));
 
         mOverlayView.setDimmedColor(intent.getIntExtra(UCrop.Options.EXTRA_DIMMED_LAYER_COLOR, getResources().getColor(R.color.ucrop_color_default_dimmed)));
+        mOverlayView.setDimmedStrokeColor(intent.getIntExtra(UCrop.Options.EXTRA_DIMMED_LAYER_STROKE_COLOR, getResources().getColor(R.color.ucrop_color_default_dimmed)));
+        mOverlayView.setDimmedStrokeWidth(intent.getIntExtra(UCrop.Options.EXTRA_DIMMED_LAYER_STROKE_WIDTH, getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_dimmed_stroke_width)));
         mOverlayView.setCircleDimmedLayer(intent.getBooleanExtra(UCrop.Options.EXTRA_CIRCLE_DIMMED_LAYER, OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER));
 
         mOverlayView.setShowCropFrame(intent.getBooleanExtra(UCrop.Options.EXTRA_SHOW_CROP_FRAME, OverlayView.DEFAULT_SHOW_CROP_FRAME));
@@ -253,6 +255,8 @@ public class UCropActivity extends AppCompatActivity {
         mOverlayView.setCropGridColumnCount(intent.getIntExtra(UCrop.Options.EXTRA_CROP_GRID_COLUMN_COUNT, OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT));
         mOverlayView.setCropGridColor(intent.getIntExtra(UCrop.Options.EXTRA_CROP_GRID_COLOR, getResources().getColor(R.color.ucrop_color_default_crop_grid)));
         mOverlayView.setCropGridStrokeWidth(intent.getIntExtra(UCrop.Options.EXTRA_CROP_GRID_STROKE_WIDTH, getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_grid_stoke_width)));
+
+        mOverlayView.setHorizontalPadding(intent.getIntExtra(UCrop.Options.EXTRA_HORIZONTAL_PADDING, getResources().getDimensionPixelSize(R.dimen.ucrop_padding_crop_frame)));
 
         // Aspect ratio options
         float aspectRatioX = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_X, -1);

@@ -223,6 +223,8 @@ public class UCropFragment extends Fragment {
         mOverlayView.setFreestyleCropEnabled(bundle.getBoolean(UCrop.Options.EXTRA_FREE_STYLE_CROP, OverlayView.DEFAULT_FREESTYLE_CROP_MODE != OverlayView.FREESTYLE_CROP_MODE_DISABLE));
 
         mOverlayView.setDimmedColor(bundle.getInt(UCrop.Options.EXTRA_DIMMED_LAYER_COLOR, getResources().getColor(R.color.ucrop_color_default_dimmed)));
+        mOverlayView.setDimmedStrokeColor(bundle.getInt(UCrop.Options.EXTRA_DIMMED_LAYER_STROKE_COLOR, getResources().getColor(R.color.ucrop_color_default_dimmed)));
+        mOverlayView.setDimmedStrokeWidth(bundle.getInt(UCrop.Options.EXTRA_DIMMED_LAYER_STROKE_WIDTH, getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_dimmed_stroke_width)));
         mOverlayView.setCircleDimmedLayer(bundle.getBoolean(UCrop.Options.EXTRA_CIRCLE_DIMMED_LAYER, OverlayView.DEFAULT_CIRCLE_DIMMED_LAYER));
 
         mOverlayView.setShowCropFrame(bundle.getBoolean(UCrop.Options.EXTRA_SHOW_CROP_FRAME, OverlayView.DEFAULT_SHOW_CROP_FRAME));
@@ -234,6 +236,8 @@ public class UCropFragment extends Fragment {
         mOverlayView.setCropGridColumnCount(bundle.getInt(UCrop.Options.EXTRA_CROP_GRID_COLUMN_COUNT, OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT));
         mOverlayView.setCropGridColor(bundle.getInt(UCrop.Options.EXTRA_CROP_GRID_COLOR, getResources().getColor(R.color.ucrop_color_default_crop_grid)));
         mOverlayView.setCropGridStrokeWidth(bundle.getInt(UCrop.Options.EXTRA_CROP_GRID_STROKE_WIDTH, getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_grid_stoke_width)));
+
+        mOverlayView.setHorizontalPadding(bundle.getInt(UCrop.Options.EXTRA_HORIZONTAL_PADDING, getResources().getDimensionPixelSize(R.dimen.ucrop_padding_crop_frame)));
 
         // Aspect ratio options
         float aspectRatioX = bundle.getFloat(UCrop.EXTRA_ASPECT_RATIO_X, -1);

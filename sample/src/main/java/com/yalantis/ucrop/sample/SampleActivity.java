@@ -2,6 +2,7 @@ package com.yalantis.ucrop.sample;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,6 +33,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yalantis.ucrop.CropManager;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
 import com.yalantis.ucrop.UCropFragment;
@@ -41,6 +43,10 @@ import java.io.File;
 import java.util.Locale;
 import java.util.Random;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
@@ -93,11 +99,36 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
     private CheckBox mCheckBoxUseFileProvider;
     private Uri destinationUri;
 
+    private ActivityResultLauncher<Intent> cropActivityResultLauncher;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample);
         setupUI();
+        setupActivityResultLauncher();
+    }
+
+    private void setupActivityResultLauncher() {
+        cropActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            if (data != null) { // Always good to check for null
+                                Uri resultUri = UCrop.getOutput(data);
+//                                loadImageView(resultUri, binding.ivHead);
+                            }
+                        } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
+                            Throwable cropError = UCrop.getError(result.getData());
+                        }
+                    }
+                }
+        );
     }
 
     @Override
@@ -471,7 +502,7 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
         }
     }
 
-    private void startCrop(@NonNull Uri uri) {
+    private void startCrop2(@NonNull Uri uri) {
         String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME;
         switch (mRadioGroupCompressionSettings.getCheckedRadioButtonId()) {
             case R.id.radio_png:
@@ -497,6 +528,32 @@ public class SampleActivity extends BaseActivity implements UCropFragmentCallbac
             uCrop.start(SampleActivity.this);
         }
 
+    }
+
+    /**
+     * Test UI
+     * @param uri
+     */
+    private void startCrop(@NonNull Uri uri) {
+        String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME;
+        switch (mRadioGroupCompressionSettings.getCheckedRadioButtonId()) {
+            case R.id.radio_png:
+                destinationFileName += ".png";
+                break;
+            case R.id.radio_jpeg:
+                destinationFileName += ".jpg";
+                break;
+        }
+
+        String destinationFilePath = getCacheDir() + File.separator + destinationFileName;
+
+        CropManager.INSTANCE.startCircleCrop(this, uri, destinationFilePath, cropActivityResultLauncher);
+//        CropManager.INSTANCE.startCircleCropWithHorizontalPadding(this, uri, destinationFilePath, cropActivityResultLauncher);
+//        CropManager.INSTANCE.startRectCrop(this, uri, destinationFilePath, cropActivityResultLauncher);
+//        CropManager.INSTANCE.startRectGridCrop(this, uri, destinationFilePath, cropActivityResultLauncher);
+//        CropManager.INSTANCE.startRectCropWithHorizontalPadding(this, uri, destinationFilePath, cropActivityResultLauncher);
+//        CropManager.INSTANCE.startFreeStyleCircleCrop(this, uri, destinationFilePath, cropActivityResultLauncher);
+//        CropManager.INSTANCE.startFreeStyleRectCrop(this, uri, destinationFilePath, cropActivityResultLauncher);
     }
 
     /**

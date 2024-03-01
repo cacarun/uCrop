@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -34,7 +34,7 @@ public class UCrop {
     public static final int RESULT_ERROR = 96;
     public static final int MIN_SIZE = 10;
 
-    private static final String EXTRA_PREFIX = BuildConfig.APPLICATION_ID;
+    private static final String EXTRA_PREFIX = "com.customapp.ucrop";
 
     public static final String EXTRA_INPUT_URI = EXTRA_PREFIX + ".InputUri";
     public static final String EXTRA_OUTPUT_URI = EXTRA_PREFIX + ".OutputUri";
@@ -158,6 +158,15 @@ public class UCrop {
     }
 
     /**
+     * Send the crop Intent from an Activity with a ActivityResultLauncher
+     *
+     * @param context Context to receive result
+     */
+    public void start(@NonNull Context context, @NonNull ActivityResultLauncher<Intent> launcher) {
+        launcher.launch(getIntent(context));
+    }
+
+    /**
      * Get Intent to start {@link UCropActivity}
      *
      * @return Intent for {@link UCropActivity}
@@ -247,7 +256,11 @@ public class UCrop {
         public static final String EXTRA_IMAGE_TO_CROP_BOUNDS_ANIM_DURATION = EXTRA_PREFIX + ".ImageToCropBoundsAnimDuration";
 
         public static final String EXTRA_DIMMED_LAYER_COLOR = EXTRA_PREFIX + ".DimmedLayerColor";
+        public static final String EXTRA_DIMMED_LAYER_STROKE_COLOR = EXTRA_PREFIX + ".DimmedLayerStrokeColor";
+        public static final String EXTRA_DIMMED_LAYER_STROKE_WIDTH = EXTRA_PREFIX + ".DimmedLayerStrokeWidth";
         public static final String EXTRA_CIRCLE_DIMMED_LAYER = EXTRA_PREFIX + ".CircleDimmedLayer";
+
+        public static final String EXTRA_HORIZONTAL_PADDING = EXTRA_PREFIX + ".HorizontalPadding";
 
         public static final String EXTRA_SHOW_CROP_FRAME = EXTRA_PREFIX + ".ShowCropFrame";
         public static final String EXTRA_CROP_FRAME_COLOR = EXTRA_PREFIX + ".CropFrameColor";
@@ -348,10 +361,31 @@ public class UCrop {
         }
 
         /**
+         * @param color - desired color of dimmed stroke
+         */
+        public void setDimmedLayerStrokeColor(@ColorInt int color) {
+            mOptionBundle.putInt(EXTRA_DIMMED_LAYER_STROKE_COLOR, color);
+        }
+
+        /**
+         * @param width - desired width of crop frame line in pixels
+         */
+        public void setDimmedLayerStrokeWidth(@IntRange(from = 0) int width) {
+            mOptionBundle.putInt(EXTRA_DIMMED_LAYER_STROKE_WIDTH, width);
+        }
+
+        /**
          * @param isCircle - set it to true if you want dimmed layer to have an circle inside
          */
         public void setCircleDimmedLayer(boolean isCircle) {
             mOptionBundle.putBoolean(EXTRA_CIRCLE_DIMMED_LAYER, isCircle);
+        }
+
+        /**
+         * @param horizontalPadding - set horizontal padding
+         */
+        public void setHorizontalPadding(@IntRange(from = 0) int horizontalPadding) {
+            mOptionBundle.putInt(EXTRA_HORIZONTAL_PADDING, horizontalPadding);
         }
 
         /**

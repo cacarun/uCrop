@@ -56,6 +56,9 @@ public class OverlayView extends View {
     private boolean mShowCropFrame, mShowCropGrid;
     private boolean mCircleDimmedLayer;
     private int mDimmedColor;
+    private int mDimmedStrokeColor;
+    private int mDimmedStrokeSize;
+    private int mHorizontalPadding;
     private Path mCircularPath = new Path();
     private Paint mDimmedStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Paint mCropGridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -186,6 +189,33 @@ public class OverlayView extends View {
     }
 
     /**
+     * Setter for {@link #mDimmedStrokeColor} variable.
+     *
+     * @param dimmedStrokeColor - desired color of dimmed stroke area
+     */
+    public void setDimmedStrokeColor(@ColorInt int dimmedStrokeColor) {
+        mDimmedStrokeColor = dimmedStrokeColor;
+        mDimmedStrokePaint.setColor(mDimmedStrokeColor);
+    }
+
+    /**
+     * Setter for dimmed stroke width
+     */
+    public void setDimmedStrokeWidth(@IntRange(from = 0) int width) {
+        mDimmedStrokeSize = width;
+        mDimmedStrokePaint.setStrokeWidth(width);
+    }
+
+    /**
+     * Setter for horizontal padding
+     */
+    public void setHorizontalPadding(@IntRange(from = 0) int horizontalPadding) {
+        mHorizontalPadding = horizontalPadding;
+        setupCropBounds();
+        postInvalidate();
+    }
+
+    /**
      * Setter for crop frame stroke width
      */
     public void setCropFrameStrokeWidth(@IntRange(from = 0) int width) {
@@ -233,16 +263,19 @@ public class OverlayView extends View {
      * {@link #mCropViewRect} is used to draw crop bounds - uses padding.
      */
     public void setupCropBounds() {
-        int height = (int) (mThisWidth / mTargetAspectRatio);
+        int adjustedWidth = mThisWidth - 2 * mHorizontalPadding; // 考虑水平填充调整宽度
+        int height = (int) (adjustedWidth / mTargetAspectRatio);
         if (height > mThisHeight) {
             int width = (int) (mThisHeight * mTargetAspectRatio);
             int halfDiff = (mThisWidth - width) / 2;
-            mCropViewRect.set(getPaddingLeft() + halfDiff, getPaddingTop(),
-                    getPaddingLeft() + width + halfDiff, getPaddingTop() + mThisHeight);
+            // 使用adjustedWidth来计算水平位置，以包含水平填充
+            mCropViewRect.set(getPaddingLeft() + halfDiff + mHorizontalPadding, getPaddingTop(),
+                    getPaddingLeft() + width + halfDiff - mHorizontalPadding, getPaddingTop() + mThisHeight);
         } else {
             int halfDiff = (mThisHeight - height) / 2;
-            mCropViewRect.set(getPaddingLeft(), getPaddingTop() + halfDiff,
-                    getPaddingLeft() + mThisWidth, getPaddingTop() + height + halfDiff);
+            // 在这种情况下，同样需要考虑水平填充
+            mCropViewRect.set(getPaddingLeft() + mHorizontalPadding, getPaddingTop() + halfDiff,
+                    getPaddingLeft() + adjustedWidth + mHorizontalPadding, getPaddingTop() + height + halfDiff);
         }
 
         if (mCallback != null) {
@@ -525,15 +558,23 @@ public class OverlayView extends View {
         mCircleDimmedLayer = a.getBoolean(R.styleable.ucrop_UCropView_ucrop_circle_dimmed_layer, DEFAULT_CIRCLE_DIMMED_LAYER);
         mDimmedColor = a.getColor(R.styleable.ucrop_UCropView_ucrop_dimmed_color,
                 getResources().getColor(R.color.ucrop_color_default_dimmed));
-        mDimmedStrokePaint.setColor(mDimmedColor);
+
+        mDimmedStrokeColor = a.getColor(R.styleable.ucrop_UCropView_ucrop_dimmed_stroke_color,
+                getResources().getColor(R.color.ucrop_color_default_dimmed));
+        mDimmedStrokeSize = a.getDimensionPixelSize(R.styleable.ucrop_UCropView_ucrop_dimmed_stroke_size,
+                getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_dimmed_stroke_width));
+        mDimmedStrokePaint.setColor(mDimmedStrokeColor);
         mDimmedStrokePaint.setStyle(Paint.Style.STROKE);
-        mDimmedStrokePaint.setStrokeWidth(1);
+        mDimmedStrokePaint.setStrokeWidth(mDimmedStrokeSize);
 
         initCropFrameStyle(a);
         mShowCropFrame = a.getBoolean(R.styleable.ucrop_UCropView_ucrop_show_frame, DEFAULT_SHOW_CROP_FRAME);
 
         initCropGridStyle(a);
         mShowCropGrid = a.getBoolean(R.styleable.ucrop_UCropView_ucrop_show_grid, DEFAULT_SHOW_CROP_GRID);
+
+        mHorizontalPadding = a.getDimensionPixelSize(R.styleable.ucrop_UCropView_ucrop_horizontal_padding,
+                getResources().getDimensionPixelSize(R.dimen.ucrop_padding_crop_frame));
     }
 
     /**
